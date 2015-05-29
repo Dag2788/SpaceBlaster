@@ -12,8 +12,11 @@ import java.util.Random;
 public class GameOver {
 	BufferedImage background;
 
+	Game game;
 	
-
+	public GameOver (Game game){
+		this.game = game;
+	}
 	
 	
 	public Rectangle playButton = new Rectangle(475,330, 250, 100);
@@ -39,10 +42,20 @@ public class GameOver {
 		g.setColor(Color.white);
 		g.drawString("GAME OVER", (Game.WIDTH)/2 , 300);
 		
+		
+		Font fntTOTAL = new Font("arial", Font.BOLD, 100);
+		//g.setFont(fntTOTAL);
 		Font fnt1 = new Font("arial", Font.BOLD, 30);
+		
 		g.setFont(fnt1);
-		g.drawString("PLAY AGAIN?", helpButton.x+50,helpButton.y+50);
-		g2d.draw(helpButton);
+		String wow = (game.totalEnemiesKilled).toString();
+		g.drawString("ENEMIES KILLED", helpButton.x,helpButton.y-50);
+		
+		Font fntNUMBER = new Font("arial", Font.BOLD, 70);
+		
+		g.setFont(fntNUMBER);
+		g.drawString(wow, helpButton.x+100,helpButton.y+50);
+		g.setFont(fnt1);
 		g.drawString("QUIT", quitButton.x+80,quitButton.y+50);
 		g2d.draw(quitButton);
 		

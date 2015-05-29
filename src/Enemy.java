@@ -53,14 +53,14 @@ public class Enemy extends GameObject implements EntityB {
 		//THIS SETS THE DIRECTION TO THE LEFT AT A RANDOM SPEED EACH PASS AROUND
 		if(x < 0){
 			x = 1200;
-			velx = r.nextInt(6)+1;
+			velx = r.nextInt(12)+1;
 			enemy = enemy_left;
 			this.direction = 0;
 			//THIS SETS THE DIRECTION TO THE RIGHT AT A RANDOM SPEED EACH PASS AROUND
 		}
 		if(x >= 1250){
 			x = 0;
-			velx = r.nextInt(6)+1;
+			velx = r.nextInt(12)+1;
 			this.direction = 1;
 			//THIS SETS THE DIRECTION TO THE DOWNWARDS and UPWARDS AT A RANDOM SPEED EACH PASS AROUND
 		}if(y > 750){
@@ -79,11 +79,14 @@ public class Enemy extends GameObject implements EntityB {
 					Enemy_Bullet b = new Enemy_Bullet(this.getX()+80, this.getY()+20, tex, game, this);
 					b.setDirection(0);
 					controller.addEntity(b);
+					
 				}else if(player.getX() >= x){
 					Enemy_Bullet b = new Enemy_Bullet(this.getX()+80, this.getY()+20, tex, game, this);
 					b.setDirection(1);
 					controller.addEntity(b);
+					
 				}
+				Sound.BULLET2.play();
 			}
 
 			if ( Math.abs(x - player.getX()) <= 50 ){
@@ -96,6 +99,7 @@ public class Enemy extends GameObject implements EntityB {
 					b.setDirection(3);
 					controller.addEntity(b);
 				}
+				Sound.BULLET2.play();
 			}
 			////'Heuristic" over
 
@@ -105,9 +109,16 @@ public class Enemy extends GameObject implements EntityB {
 				if(Physics.Collision(temp, this) ){
 					hit = true;									//hit is the signals to show fire animation
 					game.getController().removeEntity(temp);	//the bullets will dissappear with contact.
-					if(r.nextInt(2)+1 > 1)						//YET another enemy behavior, change your direction randomly when hit
+					if(Math.abs(velx) > 9)
+						velx++;
+					else if (Math.abs(vely) > 9)
+						vely++;
+					
+					/*if(r.nextInt(2)+1 > 1)	{					//YET another enemy behavior, change your direction randomly when hit
 						velx = -velx;
+					}
 					else vely = -vely;
+					*/
 					this.damage++;									//inflic damage on ship
 				}
 			}
@@ -130,10 +141,12 @@ public class Enemy extends GameObject implements EntityB {
 
 			///ENEMY'S HEALTH
 			if( this.damage >= 10 ){
+				Sound.EXPLODE.play();
 				game.setBlastx(this.x);
 				game.setBlasty(this.y);
 				hit = false;
 				controller.removeEntity(this);	
+				game.totalEnemiesKilled++;
 				game.setBlasted(true);								//hit tells us to display fire before erasing.														//the controller will remove this enemy from the map and call our game mechanic
 				game.setEnemy_killed(game.getEnemy_killed()+1);
 

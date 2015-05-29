@@ -5,7 +5,10 @@ import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Random;
 
@@ -24,32 +27,21 @@ public class Game extends Canvas implements Runnable{
 	public final String TITLE = "2D Space Game";
 	public boolean running = false;
 	private Thread thread;
-	////////////////////////////////////
 	private BufferedImage image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
 	private BufferedImage spriteSheet = null;
 	private BufferedImage background = null;
 	private boolean is_Shooting = false; 
 	Animation anim;			// this is the animation for fire
 	private int counter = 0; ///?
-	
 	private int enemy_count = 2;	//AI mechanics
 	private int enemy_killed = 0;	//AI mechanics
-	private boolean chosenHeart = false;
-	public boolean isChosenHeart() {
-		return chosenHeart;
-	}
-
-	public void setChosenHeart(boolean chosenHeart) {
-		this.chosenHeart = chosenHeart;
-	}
-
 	private Player player;			
 	private Controller controller; //the AI of the project
 	private Textures tex;		//all the pictures
 	private Menu menu; 			//game state
 	private HelpSettings help;  //game state
 	private GameOver gameover;  // game state
-	
+
 	private GameCamara gameCamara;  //for future projects
 									
 	public LinkedList<EntityA> ea;  //game entities A = good guy's bullets
@@ -61,6 +53,7 @@ public class Game extends Canvas implements Runnable{
 	private double blasty;
 	private double blastx;
 	Random r = new Random();
+	public Integer totalEnemiesKilled = 0;
 
 
 	public static enum STATE{
@@ -101,10 +94,10 @@ public class Game extends Canvas implements Runnable{
 		controller = new Controller(this, tex);
 		menu = new Menu(this, tex);
 		help = new HelpSettings(this, tex);
-		gameover = new GameOver();
+		gameover = new GameOver(this);
 		//gameCamara = new GameCamara(this, 0,0);
 		anim = new Animation(2, tex.f1, tex.f2, tex.f3,tex.f4,tex.f5,tex.f6,tex.f7,tex.f8);
-
+		Sound.MENU.loop(); /// added here
 
 		
 		ea = controller.getE();
@@ -231,7 +224,7 @@ public class Game extends Canvas implements Runnable{
 			if(enemy_killed >= enemy_count){
 				enemy_count +=1;
 				enemy_killed = 0;
-				if(enemy_count >= 4){
+				if(enemy_count >= 7){
 					enemy_count = 1;
 					enemy_killed = 0;
 				}
@@ -380,6 +373,7 @@ public class Game extends Canvas implements Runnable{
 								controller.addEntity(b);
 								controller.addEntity(c);
 								} 
+			Sound.BULLET1.play();
 		}
 		}
 	}
@@ -446,6 +440,38 @@ public class Game extends Canvas implements Runnable{
 	
 			is_Shooting = false;
 		}
+	}
+	
+	
+	public void restartApplication() 
+	{
+	  final String javaBin = System.getProperty("java.home") + File.separator + "bin" + File.separator + "java";
+	  File currentJar = null;
+	try {
+		currentJar = new File(Game.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+	} catch (URISyntaxException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+
+	  /* is it a jar file? */
+	  if(!currentJar.getName().endsWith(".jar"))
+	    return;
+
+	  /* Build command: java -jar application.jar */
+	  final ArrayList<String> command = new ArrayList<String>();
+	  command.add(javaBin);
+	  command.add("-jar");
+	  command.add(currentJar.getPath());
+
+	  final ProcessBuilder builder = new ProcessBuilder(command);
+	  try {
+		builder.start();
+	} catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	  System.exit(0);
 	}
 	
 	

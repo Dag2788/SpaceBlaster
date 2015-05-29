@@ -1,6 +1,9 @@
+import java.applet.Applet;
+import java.applet.AudioClip;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.net.URL;
 
 
 public class MouseInput implements MouseListener {
@@ -42,11 +45,13 @@ public class MouseInput implements MouseListener {
 		
 		
 		if(Game.State == Game.State.MENU){
-
+			
+			
 			if( mx >= 475 && mx <= 725){
 				if( my >= 330 && my <= 430){
 					Game.State = Game.State.GAME;
-
+					Sound.MENU.stop();
+					Sound.BACKGROUND.loop();
 				}
 			}
 
@@ -82,7 +87,7 @@ public class MouseInput implements MouseListener {
 			
 			if( mx >= 475 && mx <= 725){
 				if( my >= 470 && my <= 570){
-
+					
 				}
 			}
 			

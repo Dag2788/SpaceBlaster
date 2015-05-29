@@ -31,7 +31,7 @@ public class Item extends GameObject implements EntityI{
 		
 	}
 	private boolean render = true;
-	private boolean hiding = false;
+	private boolean hiding = true;
 	private boolean pickedup = false;
 	public int try3= 0;
 	public void tick(){
@@ -43,7 +43,8 @@ public class Item extends GameObject implements EntityI{
 		try3++;
 		
 		
-			if( !hiding && Physics.Collision(this, (EntityC)(game.getPlayer() ) )){
+			if( !hiding && Physics.Collision(this, (EntityC)(game.getPlayer()))   ){
+				Sound.LIFE.play();
 				setX((int)getX());
 				setY((int)getY());
 				//setX(800)
@@ -54,7 +55,7 @@ public class Item extends GameObject implements EntityI{
 				hiding= true;
 				//System.out.println("PICKED UP -> hiding true -> DON'T RENDER;");
 			}
-			if( render && !pickedup && try3 > 120) {
+			if( render && !pickedup && try3 > 628) {
 				setX((int)getX());
 				setY((int)getY());
 				//setX(20);
@@ -64,7 +65,7 @@ public class Item extends GameObject implements EntityI{
 				//System.out.println(" NOT PICKED UP, TIME RAN OUT -> hiding true -> DON'T RENDER");
 			}
 			
-			if (hiding && try3 > 200 && try3 < 250){
+			if (hiding && (try3 > 200 && try3 < 205)){
 				pickedup = false;
 				hiding = false;
 				//setX( (int) (getX()+5) );
@@ -72,6 +73,7 @@ public class Item extends GameObject implements EntityI{
 				//System.out.println(" I AM HIDING WAITING FOR TIMER TO SET LOCATION -> RENDER");
 				render = true;
 			}
+			
 			
 			if(getY() > 725)
 				setY(0);

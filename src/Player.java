@@ -90,6 +90,8 @@ public class Player extends GameObject implements EntityC{
 		
 		if( damage <= 0){									//game over
 			Game.State = Game.State.GAMEOVER;
+			Sound.BACKGROUND.stop();
+			Sound.GAMEOVR.loop();
 
 		}
 		
